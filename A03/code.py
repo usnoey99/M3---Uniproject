@@ -6,7 +6,7 @@
 import time
 import board
 import audiocore
-import audiopwmio
+import audioio
 import displayio
 import terminalio
 
@@ -17,7 +17,9 @@ from adafruit_display_text import label
 # AUDIO SETUP
 # =====================================
 
-audio = audiopwmio.AudioOut(board.SPEAKER)
+pybadger._speaker_enable.value = True
+
+audio = audioio.AudioOut(board.SPEAKER)
 
 # =====================================
 # DISPLAY SETUP
@@ -47,9 +49,16 @@ bpm_label = label.Label(terminalio.FONT, text="BPM: 120", scale=2, x=10, y=70)
 
 track_label = label.Label(terminalio.FONT, text="TRACK: straight", scale=1, x=10, y=110)
 
+# -------------------------------------
+# STATUS LABEL
+# -------------------------------------
+
+status_label = label.Label(terminalio.FONT, text="[ PRESS START ]", scale=1, x=10, y=140)
+
 main_group.append(note_label)
 main_group.append(bpm_label)
 main_group.append(track_label)
+main_group.append(status_label)
 
 # =====================================
 # CIRCLE OF FIFTHS
@@ -82,25 +91,38 @@ step_interval = 60 / bpm
 last_step_time = time.monotonic()
 
 # =====================================
+# LOOP STATE
+# =====================================
+
+is_running = False
+
+# =====================================
 # PLAY NOTE
 # =====================================
+
+wave_file = None
 
 
 def play_note(note):
 
-    filename = "/music/" + note + ".wav"
+    global wave_file
 
+    filename = "/music/" + note + ".wav"
     print("PLAY:", filename)
 
+    if audio.playing:
+        audio.stop()
+
+    if wave_file is not None:
+        wave_file.close()
+        wave_file = None
+
     try:
-
         wave_file = open(filename, "rb")
-
         wave = audiocore.WaveFile(wave_file)
-
         audio.play(wave)
+        print("PLAYING:", filename)
     except OSError:
-
         print("WAV FILE NOT FOUND:", filename)
 
 
@@ -193,13 +215,46 @@ print("======================")
 
 update_display("C", "straight")
 
-time.sleep(1)
-
 # =====================================
 # MAIN LOOP
 # =====================================
 
 while True:
+
+    # ---------------------------------
+    # START BUTTON
+    # ---------------------------------
+
+    if pybadger.button.start:
+
+        if not is_running:
+
+            is_running = True
+            last_step_time = time.monotonic()
+            status_label.text = "[ RUNNING ]"
+
+            print("=== LOOP START ===")
+
+        time.sleep(0.2)
+
+    # ---------------------------------
+    # SELECT BUTTON
+    # ---------------------------------
+
+    if pybadger.button.select:
+
+        if is_running:
+
+            is_running = False
+
+            if audio.playing:
+                audio.stop()
+
+            status_label.text = "[ STOPPED ]"
+
+            print("=== LOOP STOP ===")
+
+        time.sleep(0.2)
 
     # ---------------------------------
     # BPM DOWN (BUTTON A)
@@ -212,6 +267,7 @@ while True:
         if bpm < min_bpm:
 
             bpm = min_bpm
+
         step_interval = 60 / bpm
 
         print("BPM DOWN:", bpm)
@@ -219,6 +275,7 @@ while True:
         update_display(circle[current_index], track[current_step])
 
         time.sleep(0.2)
+
     # ---------------------------------
     # BPM UP (BUTTON B)
     # ---------------------------------
@@ -230,6 +287,7 @@ while True:
         if bpm > max_bpm:
 
             bpm = max_bpm
+
         step_interval = 60 / bpm
 
         print("BPM UP:", bpm)
@@ -237,14 +295,17 @@ while True:
         update_display(circle[current_index], track[current_step])
 
         time.sleep(0.2)
+
     # ---------------------------------
-    # BPM CLOCK
+    # BPM CLOCK - when is_running
     # ---------------------------------
 
-    current_time = time.monotonic()
+    if is_running:
 
-    if current_time - last_step_time > step_interval:
+        current_time = time.monotonic()
 
-        last_step_time = current_time
+        if current_time - last_step_time > step_interval:
 
-        advance_step()
+            last_step_time = current_time
+
+            advance_step()
