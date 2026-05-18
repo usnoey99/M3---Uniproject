@@ -19,10 +19,11 @@ Erstellt zwei kleinere Objekte, die mit eurem Projekt zusammenhängen.
 
 ### Anforderungen
 
-- [ ] Ein Objekt mit dem **3D-Drucker** herstellen
-- [ ] Ein Objekt mit dem **Laser Cutter** herstellen
-- [ ] Eigene Designs verwenden
-- [ ] Keine fertigen Vorlagen aus dem Internet nutzen
+- [x ] Ein Objekt mit dem **3D-Drucker** herstellen
+
+- [x] Ein Objekt mit dem **Laser Cutter** herstellen
+- [x] Eigene Designs verwenden (gemacht über pdf und freeCAD)
+- [x] Keine fertigen Vorlagen aus dem Internet nutzen
 
 ### Ziel
 
@@ -30,8 +31,8 @@ Den gesamten Entwicklungs- und Herstellungsprozess selbst kennenlernen.
 
 ### Abgabe
 
-- [ ] Fotos der beiden Objekte
-- [ ] Kurze Erklärung zu den Objekten
+- [x ] Fotos der beiden Objekte
+- [x ] Kurze Erklärung zu den Objekten
 - [ ] Objekte nächste Woche mitbringen
 
 ---
@@ -43,6 +44,11 @@ Erstellt eine Liste aller benötigten Bauteile für das Projekt.
 ### Aufgaben
 
 - [ ] Benötigte Komponenten sammeln
+1. **Magnete**(100 Stück, 20x5) 3mmx2mm link: https://www.magnet-shop.net/neodym-magnete/scheibenmagnete/scheibenmagnet-3.0-x-2.0-mm-n35-nickel-haelt-300-g
+2. **Neopixel** (noch nicht)
+3. **Pogopins/connectors** (50x Stück) müssen 5 pins haben und auch direkt einen connector dazu oder einfach stiftleiste und buchsenleiste??
+4. **Microcontroller** (20x stück) evtl noch zubehör wie platinen
+5. **Potentiometer** 10k
 - [ ] Mengen festlegen
 - [ ] Fehlende Teile identifizieren
 
