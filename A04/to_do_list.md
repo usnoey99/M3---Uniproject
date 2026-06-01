@@ -4,13 +4,13 @@
   - [x] ESP32 konfigurieren & Blink-Test erfolgreich
 
 - [ ] **2. UART-Kommunikation**
-  - [ ] ESP32 ↔ PyBadge verbinden
+  - [ ] ESP32 <-> PyBadge verbinden
   - [ ] UART testen
   - [ ] Befehle senden/empfangen (BPM_UP / BPM_DOWN / START / STOP)
 
 - [ ] **3. PyBadge (UI)**
   - [ ] UART-Empfang implementieren
-  - [ ] Buttons → UART-Befehle senden
+  - [ ] Buttons -> UART-Befehle senden
   - [ ] Display für NOTE / BPM / STATUS
   - [ ] Nur UI-Logik (keine Berechnung)
 
@@ -34,9 +34,9 @@
   - [ ] Timing mit millis()
 
 - [ ] **8. Integrationstest**
-  - [ ] UART-Kommunikation testen (ESP32 ↔ PyBadge)
+  - [ ] UART-Kommunikation testen (ESP32 <-> PyBadge)
   - [ ] BPM beeinflusst Playback
-  - [ ] Track → Note → Loop funktioniert
+  - [ ] Track -> Note -> Loop funktioniert
   - [ ] Display zeigt Live-Daten korrekt
 
 - [ ] **Optional (Future)**
