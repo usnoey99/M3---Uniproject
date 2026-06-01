@@ -3,24 +3,27 @@
 - [x] **1. Entwicklungsumgebung**
   - [x] ESP32 konfigurieren & Blink-Test erfolgreich
 
-- [ ] **2. UART-Kommunikation**
-  - [ ] ESP32 <-> PyBadge verbinden
-  - [ ] UART testen
-  - [ ] Befehle senden/empfangen (BPM_UP / BPM_DOWN / START / STOP)
+- [x] **2. UART-Kommunikation**
+  - [x] ESP32 <-> PyBadge verbinden
+  - [x] UART testen
+  - [x] Befehle senden/empfangen (BPM_UP / BPM_DOWN / START / STOP)
 
-- [ ] **3. PyBadge (UI)**
-  - [ ] UART-Empfang implementieren
-  - [ ] Buttons -> UART-Befehle senden
-  - [ ] Display für NOTE / BPM / STATUS
-  - [ ] Nur UI-Logik (keine Berechnung)
+- [x] **3. PyBadge (UI)**
+  - [x] UART-Empfang implementieren
+  - [x] Buttons -> UART-Befehle senden
+  - [x] Display für NOTE / BPM / STATUS
+  - [x] Nur UI-Logik (keine Berechnung)
 
-- [ ] **4. ESP32 Datenstruktur**
-  - [ ] BlockType (LEFT / RIGHT / STRAIGHT)
-  - [ ] Track-Array + playhead
+- [x] **4. ESP32 Datenstruktur**
+  - [x] BlockType (LEFT / RIGHT / STRAIGHT)
+  - [x] Track-Array + playhead
 
-- [ ] **5. Eingabesystem (ESP32)**
-  - [ ] Serielle Eingabe (L / R / S / X)
-  - [ ] Track-Erstellung testen
+- [x] **5. Eingabesystem (ESP32)**
+  - [x] Serielle Eingabe (L / R / S / X)
+  - [x] Track-Erstellung testen
+
+
+Ich habe das technische Fundament erfolgreich fertiggestellt und die UART-Verbindung zwischen ESP32 und PyBadge stabil eingerichtet. Auf dem PyBadge läuft die komplette UI-Logik (CircuitPython) zur Anzeige von BPM, Note und Status sowie zum Senden von Button-Befehlen. Auf dem ESP32 wurde die Track-Datenstruktur implementiert und auf 18 Blöcke optimiert. Das Eingabesystem über den PC-Serienmonitor liest Streckenbefehle (L/R/S/X) fehlerfrei in das Array ein.
 
 ---
 
