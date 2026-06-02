@@ -27,20 +27,26 @@ Ich habe das technische Fundament erfolgreich fertiggestellt und die UART-Verbin
 
 ---
 
-- [ ] **6. Musik-Engine (ESP32)**
-  - [ ] Circle of Fifths implementieren
-  - [ ] Notenberechnung basierend auf Track-Richtung
+- [x] **6. Musik-Engine (ESP32)**
+  - [x] Circle of Fifths implementieren
+  - [x] Notenberechnung basierend auf Track-Richtung
 
-- [ ] **7. Playback-Engine (ESP32)**
-  - [ ] Playhead-Loop implementieren
-  - [ ] BPM-System im ESP32
-  - [ ] Timing mit millis()
+- [x] **7. Playback-Engine (ESP32)**
+  - [x] Playhead-Loop implementieren
+  - [x] BPM-System im ESP32
+  - [x] Timing mit millis()
 
-- [ ] **8. Integrationstest**
-  - [ ] UART-Kommunikation testen (ESP32 <-> PyBadge)
-  - [ ] BPM beeinflusst Playback
-  - [ ] Track -> Note -> Loop funktioniert
-  - [ ] Display zeigt Live-Daten korrekt
+- [x] **8. Integrationstest**
+  - [x] UART-Kommunikation testen (ESP32 <-> PyBadge)
+  - [x] BPM beeinflusst Playback
+  - [x] Track -> Note -> Loop funktioniert
+  - [x] Display zeigt Live-Daten korrekt
+
+
+Ich habe die Musik- und Playback-Engine des ESP32 erfolgreich implementiert. Die Notenberechnung (Quintenzirkel) passt sich dynamisch der Strecke an, inklusive sicherem Loop-Reset auf die Startnote. Das Playback-Timing wird nun flüssig über millis() gesteuert und durch BPM-Limits (60-240) abgesichert. Der Integrationstest bestätigt eine fehlerfreie Umwandlung der Tracks in Musik sowie eine optimierte Echtzeit-Anzeige auf dem PyBadge (150ms Update-Rate).
+
+<img src="a04_demo1.jpg" width="600">
+
 
 - [ ] **Optional (Future)**
   - [ ] Pedal-Eingang für BPM (ESP32 übernimmt Steuerung)
