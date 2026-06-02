@@ -45,8 +45,7 @@ Ich habe das technische Fundament erfolgreich fertiggestellt und die UART-Verbin
 
 Ich habe die Musik- und Playback-Engine des ESP32 erfolgreich implementiert. Die Notenberechnung (Quintenzirkel) passt sich dynamisch der Strecke an, inklusive sicherem Loop-Reset auf die Startnote. Das Playback-Timing wird nun flüssig über millis() gesteuert und durch BPM-Limits (60-240) abgesichert. Der Integrationstest bestätigt eine fehlerfreie Umwandlung der Tracks in Musik sowie eine optimierte Echtzeit-Anzeige auf dem PyBadge (150ms Update-Rate).
 
-<img src="a04_demo1.jpg" width="600">
-
+![UART Serial Monitor](a04_demo1.jpg)
 
 - [ ] **Optional (Future)**
   - [ ] Pedal-Eingang für BPM (ESP32 übernimmt Steuerung)
