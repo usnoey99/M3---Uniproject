@@ -5,14 +5,16 @@
   - [x] UI-Anzeige für "GEAR" (Oktave) als statischer Platzhalter vorbereitet
   - [x] Temporäre Tastensteuerung (Button A/B für BPM) für die Prototyp-Phase ohne Hardware-Pedal eingerichtet
 
-  Der grafische Prototyp für das PyBadge-Display wurde heute erfolgreich fertiggestellt. Die bisherige textbasierte Anzeige wurde durch eine Pseudo-3D-Rennstrecke aus Basis-Formen (TileGrids) ersetzt. Neu hinzugekommen ist eine flüssige Scrolling-Animation der Fahrbahnmarkierungen. Da das Hardware-Pedal noch nicht angeschlossen ist, fungieren die Buttons A und B temporär als Gaspedal, um die BPM und damit die Animationsgeschwindigkeit zu steuern. Die Anzeige für den "GEAR" (spätere Oktave) ist bereits als statischer Platzhalter in der UI integriert. Die UART-Kommunikation läuft fehlerfrei parallel zur neuen Rendering-Schleife. Der nächste Schritt ist die Erstellung und Integration der finalen Pixel-Art-Assets, um die Platzhalter-Formen zu ersetzen.
+Der grafische PyBadge-Prototyp ist fertiggestellt: Die einfache Text-UI wurde durch eine Pseudo-3D-Rennstrecke mit flüssiger Scrolling-Animation ersetzt. Da das Hardware-Pedal noch fehlt, steuern die Buttons A/B temporär die BPM (Animationsgeschwindigkeit). Die "GEAR"-Anzeige (Oktave) dient vorerst als statischer Platzhalter, während die UART-Kommunikation fehlerfrei parallel zum neuen Rendering läuft.
 
-- [ ] **10. Grafik-Assets (Pixel Art) erstellen**
-  - [ ] Zeichen-Tool auswählen (z.B. Piskel (piskelapp.com) oder Pixilart (pixilart.com))
-  - [ ] Sprites entwerfen (Auto, Hintergrund, UI-Elemente)
-  - [ ] Assets formatgerecht exportieren (max. 160x128 Pixel, .bmp Format / 256 Farben)
+- [x] **2. Grafik-Assets (Pixel Art) erstellen**
+  - [x] Zeichen-Tool auswählen (z.B. Piskel (piskelapp.com) oder Pixilart (pixilart.com))
+  - [x] Sprites entwerfen (Auto, Hintergrund, UI-Elemente)
+  - [x] Assets formatgerecht exportieren (max. 160x128 Pixel, .bmp Format / 256 Farben)
 
-- [ ] **11. PyBadge Grafik-Integration (CircuitPython)**
-  - [ ] BMP-Dateien in den CIRCUITPY-Speicher übertragen
-  - [ ] adafruit_imageload Bibliothek einbinden
-  - [ ] Bisherige Platzhalter-Formen (TileGrids) durch echte Pixel-Art-Sprites ersetzen
+- [x] **3. PyBadge Grafik-Integration (CircuitPython)**
+  - [x] BMP-Dateien in den CIRCUITPY-Speicher übertragen
+  - [x] adafruit_imageload Bibliothek einbinden
+  - [x] Bisherige Platzhalter-Formen (TileGrids) durch echte Pixel-Art-Sprites ersetzen
+
+Zudem wurden die bisherigen grafischen Platzhalter durch finale Pixel-Art-Assets (Retro-Hintergrund und Auto) ersetzt. Die erstellten 24-Bit-BMP-Dateien wurden mithilfe der adafruit_imageload-Bibliothek erfolgreich in den CircuitPython-Code eingebunden.
