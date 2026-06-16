@@ -18,3 +18,15 @@ Der grafische PyBadge-Prototyp ist fertiggestellt: Die einfache Text-UI wurde du
   - [x] Bisherige Platzhalter-Formen (TileGrids) durch echte Pixel-Art-Sprites ersetzen
 
 Zudem wurden die bisherigen grafischen Platzhalter durch finale Pixel-Art-Assets (Retro-Hintergrund und Auto) ersetzt. Die erstellten 24-Bit-BMP-Dateien wurden mithilfe der adafruit_imageload-Bibliothek erfolgreich in den CircuitPython-Code eingebunden.
+
+- [x] **4. ESP32 Audio-Synthesizer (Prototyp)**
+  - [x] BluetoothA2DPSource Bibliothek integrieren
+  - [x] Echtzeit-Klangsynthese (Sinuswelle) im ESP32 programmieren
+  - [x] Notenfrequenzen (Circle of Fifths) mit der Audio-Ausgabe verknüpfen
+  - [x] Bluetooth-Streaming an externen Lautsprecher einrichten
+
+- [x] **5.BPM & Playback Synchronisation**
+  - [x] Notenlänge dynamisch an die aktuelle BPM anpassen (80% des Beat-Intervalls)
+  - [x] Audio-Trigger fehlerfrei in die bestehende millis()-Playback-Loop integrieren
+
+Ein Echtzeit-Audiosynthesizer (Sinuswelle) wurde auf dem ESP32 implementiert, der die Frequenzen des Quintenzirkels berechnet und kabellos via Bluetooth A2DP streamt. Tonlänge und Timing passen sich dabei dynamisch der aktuellen BPM an. Damit ist das System nun visuell (PyBadge) und akustisch vollständig synchronisiert. Ein Praxistest mit einem echten Bluetooth-Lautsprecher steht aktuell noch aus und muss zeitnah durchgeführt werden.
