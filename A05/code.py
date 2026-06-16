@@ -51,7 +51,7 @@ main_group.append(car)
 
 # --- [Text-UI] ---
 gear_label = label.Label(terminalio.FONT, text="GEAR: 1", color=0xFFFFFF, x=5, y=10)
-note_label = label.Label(terminalio.FONT, text="NOTE: -", color=0xFFFF00, x=65, y=10)
+note_label = label.Label(terminalio.FONT, text="NOTE: -", color=0xFFFF00, x=55, y=10)
 bpm_label = label.Label(terminalio.FONT, text="BPM: -", color=0x00FFFF, x=110, y=10)
 
 main_group.append(gear_label)
@@ -89,15 +89,8 @@ while True:
                 bpm_label.text = "BPM: " + str(current_bpm)
                 is_running = (status == "RUNNING")
 
-                # Automatische Gangschaltung basierend auf BPM
-                if current_bpm < 100:
-                    current_gear = 1
-                elif current_bpm < 150:
-                    current_gear = 2
-                elif current_bpm < 200:
-                    current_gear = 3
-                else:
-                    current_gear = 4
+                # angschaltung noch fest
+                current_gear = 1
 
                 gear_label.text = "GEAR: " + str(current_gear)
         except Exception as e:
