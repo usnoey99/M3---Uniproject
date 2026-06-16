@@ -46,7 +46,7 @@ car_bitmap, car_palette = adafruit_imageload.load("/car.bmp",
 car_palette.make_transparent(0)
 
 # Auto platzieren (X=60, da das Bild 40px breit ist -> (160-40)/2 = 60 für die Mitte)
-car = displayio.TileGrid(car_bitmap, pixel_shader=car_palette, x=60, y=105)
+car = displayio.TileGrid(car_bitmap, pixel_shader=car_palette, x=60, y=100)
 main_group.append(car)
 
 # --- [Text-UI] ---
