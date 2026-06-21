@@ -6,7 +6,7 @@
 
 - [ ] **2. Grafik- und UI-Überarbeitung**
   - [x] Pixel-Art für das Auto neu zeichnen und verbessern.
-  - [ ] Benutzeroberfläche (UI) für die gleichzeitige/bessere Anzeige von BMP-Grafiken und Code anpassen.
+  - [x] Benutzeroberfläche (UI) für die gleichzeitige/bessere Anzeige von BMP-Grafiken und Code anpassen.
 
 - [ ] **Optionale Erweiterungen**
   - [ ] Falls Zeit bleibt: Den aktuellen Pixel-Art-Hintergrund durch eine neue Version ersetzen oder weiter optimieren.
