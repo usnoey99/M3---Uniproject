@@ -68,7 +68,7 @@ int32_t get_audio_data(Frame *channels, int32_t channel_len) {
         // Ueberpruefen, ob ein Ton aktiv ist und die Zeit noch nicht abgelaufen ist
         if (current_frequency > 0 && (millis() - sound_start_time < sound_duration)) {
             // Sinuswelle berechnen (5000 ist die Lautstaerke/Amplitude)
-            int16_t sample = sin(sample_index) * 5000; 
+            int16_t sample = sin(sample_index) * 1000; 
             channels[i].channel1 = sample; // left
             channels[i].channel2 = sample; // right
             
@@ -101,7 +101,7 @@ void setup() {
 
     // Bluetooth A2DP Source starten (Hier den Namen des Lautsprechers eintragen)
     Serial.println("[SYSTEM] Verbinde mit Bluetooth-Lautsprecher...");
-    a2dp_source.start("SoundCore 2", get_audio_data);
+    a2dp_source.start("HUAWEI CM510", get_audio_data);
 }
 
 void loop() {
@@ -115,10 +115,16 @@ void loop() {
         if (c == 'X') {
             track_length = 0;
             playhead = 0;
-            current_note_index = start_note_index; // Note auch auf "C" zuruecksetzen
+            // Note auch auf "C" zuruecksetzen
+            start_note_index = 0;
+            current_note_index = start_note_index;
             state.bpm = STD_BPM;
             state.note = circleOfFifths[current_note_index];
-            Serial.println("[SYSTEM] Track wurde zurueckgesetzt.");
+            // Status auf STOPPED setzen und PyBadge ins Menue schicken
+            state.status = "STOPPED";
+            Serial2.println("CMD_MENU"); 
+            
+            Serial.println("[SYSTEM] Track wurde zurueckgesetzt. Gehe zum Menue.");
         } 
         else if ((c == 'L' || c == 'R' || c == 'S') && track_length < MAX_TRACK) {
             if (c == 'L') track[track_length] = LEFT;
@@ -213,6 +219,29 @@ void loop() {
         }
         else if (command == "STOP") {
             state.status = "STOPPED";
+            Serial2.println("CMD_MENU");
+            Serial.println("[SYSTEM] Track wurde zurueckgesetzt. Gehe zum Menue.");
+        }
+        // * Startnote ueber das D-Pad aendern *
+        else if (command == "NOTE_UP") {
+            // Die Startnote darf nur geaendert werden, wenn die Wiedergabe pausiert ist
+            if (String(state.status) == "STOPPED") {
+                // Einen Schritt im Quintenzirkel vorwaerts (Modulo 12 fuer den Loop)
+                start_note_index = (start_note_index + 1) % 12;
+                current_note_index = start_note_index;
+                state.note = circleOfFifths[current_note_index];
+                Serial.printf("[SYSTEM] Startnote geaendert auf: %s\n", state.note);
+            }
+        }
+        else if (command == "NOTE_DOWN") {
+            // Die Startnote darf nur geaendert werden, wenn die Wiedergabe pausiert ist
+            if (String(state.status) == "STOPPED") {
+                // Einen Schritt im Quintenzirkel rueckwaerts (+12 verhindert negative Werte)
+                start_note_index = (start_note_index - 1 + 12) % 12;
+                current_note_index = start_note_index;
+                state.note = circleOfFifths[current_note_index];
+                Serial.printf("[SYSTEM] Startnote geaendert auf: %s\n", state.note);
+            }
         }
     }
 
