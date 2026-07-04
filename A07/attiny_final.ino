@@ -1,5 +1,5 @@
 
-#define I2C_ADDRESS  0x13   // Chip-Adresse: 0x10=STRAIGHT, 0x11=LEFT, 0x12=RIGHT
+#define I2C_ADDRESS  0x13   //change
 #define DIRECTION    0     // Richtung: 0=STRAIGHT, 1=LEFT, 2=RIGHT
 // =============================================
 
@@ -11,10 +11,10 @@
 #define PIN_CHAIN_OUT 1   // PB1
 
 // Statusvariablen 
-uint8_t kick_val     = 0;     // Aktuelles Kick-Bitmuster (0-15, je nach Jumper)
-uint8_t snare_val    = 0;     // Snare-Wert (Phase A: immer 0, kommt spaeter)
-bool chain_active    = false; // Bin ich gerade dran in der Kette? (chain_active=1 = ja)
-bool selected        = false; // Wurde ich schon vom ESP32 erkannt und gespeichert?
+uint8_t kick_val     = 0;     
+uint8_t snare_val    = 0;     
+bool chain_active    = false; 
+bool selected        = false; 
 
 // Liest den Analog-Pin stabil aus
 
@@ -27,7 +27,7 @@ uint16_t readStableADC(uint8_t pin) {
         sum += analogRead(pin);       // 16 Messungen addieren
         delayMicroseconds(100);       // Kurze Pause zwischen Messungen
     }
-    return sum / 16;  // Durchschnitt zurueckgeben
+    return sum / 16;  // Durchschnitt 
 }
 
 //   decodeKick() 
@@ -53,16 +53,11 @@ uint8_t decodeKick(uint16_t val) {
 }
 
 // Chain
-//   1. ESP32 setzt GPIO4 HIGH → erstes Modul bekommt Signal an Chain-IN
-//   2. Dieses Modul: chain_in=HIGH → chain_active=true → meldet sich per I2C
-//   3. ESP32 liest chain_active=1 → speichert dieses Modul als Position 0
-//   4. ESP32 schickt NEXT (0x01) → selected=true, Chain-OUT=HIGH
-//   5. Chain-OUT HIGH geht ans naechste Modul als Chain-IN
+
 void handleChain() {
     bool chain_in = (digitalRead(PIN_CHAIN_IN) == HIGH);
 
     if (selected) {
-        // Ich wurde schon erkannt und gespeichert
         // Chain-OUT bleibt HIGH damit das naechste Modul aktiviert bleibt
         chain_active = false;
         digitalWrite(PIN_CHAIN_OUT, HIGH);
@@ -70,7 +65,7 @@ void handleChain() {
     else if (chain_in) {
        
         chain_active = true;
-        digitalWrite(PIN_CHAIN_OUT, LOW); // naechstes Modul noch warten lassen
+        digitalWrite(PIN_CHAIN_OUT, LOW); //  Modul noch warten lassen
     }
     else {
         chain_active = false;
@@ -80,10 +75,7 @@ void handleChain() {
 
 
 //(Wire.requestFrom)
-//   Byte 1: DIRECTION (0=STRAIGHT, 1=LEFT, 2=RIGHT)
-//   Byte 2: kick_val  (Jumper-Bitmuster 0-15)
-//   Byte 3: snare_val (Phase A: immer 0)
-//   Byte 4: chain_active (1=ich bin dran, 0=ich bin nicht dran)
+
 void requestEvent() {
     Wire.write(DIRECTION);
     Wire.write(kick_val);
@@ -92,8 +84,8 @@ void requestEvent() {
 }
 
 
-//   0x01 = NEXT: "Du wurdest erkannt, leite Chain ans naechste Modul weiter"
-//   0x00 = RESET: "Vergiss alles, neuer Scan startet gleich"
+//   0x01 = NEXT: 
+//   0x00 = RESET: 
 void receiveEvent(int numBytes) {
     if (numBytes < 1) return;
     uint8_t cmd = Wire.read();
@@ -113,8 +105,8 @@ void receiveEvent(int numBytes) {
 //SETUP
 void setup() {
     // Chain-Pins konfigurieren
-    pinMode(PIN_CHAIN_IN,  INPUT);   // Empfaengt Signal vom vorherigen Modul
-    pinMode(PIN_CHAIN_OUT, OUTPUT);  // Sendet Signal ans naechste Modul
+    pinMode(PIN_CHAIN_IN,  INPUT);   //Signal vom vorherigen Modul
+    pinMode(PIN_CHAIN_OUT, OUTPUT);  // Sendet Signal 
     digitalWrite(PIN_CHAIN_OUT, LOW); // Erstmal LOW (noch nicht aktiv)
 
     // I2C starten mit der definierten Adresse
@@ -124,13 +116,8 @@ void setup() {
 }
 
 // LOOP
-// Drei Aufgaben in jedem Durchlauf:
-//   1. Kick-Jumper auslesen 
-//   2. Chain-Signal verwalten 
-//   3. Kurze Pause 
-//
 // I2C wird automatisch im Hintergrund von der USIWire Library verwaltet
-// requestEvent() und receiveEvent() werden automatisch aufgerufen wenn noetig
+// requestEvent() und receiveEvent() werden automatisch aufgerufen 
 void loop() {
     uint16_t kick_adc = readStableADC(PIN_KICK);
     kick_val          = decodeKick(kick_adc);
