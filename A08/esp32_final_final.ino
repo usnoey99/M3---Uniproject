@@ -77,12 +77,15 @@ const float note_frequencies[12] = {
 };
 
 //  Kick und SNare-Frequenz 
-#define KICK_FREQUENCY   110.0f
-#define SNARE_FREQUENCY  190.0f
+#define KICK_FREQUENCY   180.0f
+#define SNARE_FREQUENCY  320.0f
+
 #define SAMPLE_RATE      44100.0f
 #define MELODY_LEVEL     2300.0f
+
 #define KICK_LEVEL       6500.0f
 #define SNARE_LEVEL      5200.0f
+
 #define MASTER_LIMIT     30000
 
 // Systemzustand 
@@ -549,13 +552,13 @@ void loop() {
 
                 if (kick_bits_active & (1 << current_subbeat)) {
                     kick_current_frequency = KICK_FREQUENCY;
-                    kick_start_time        = current_time;
+                    kick_start_time        = last_beat_time;
                     kick_duration  = max(35UL, subbeat_interval * 45UL / 100UL);
                    Serial.printf("[KICK] Pos:%d Viertel:%d\n", active_playhead + 1, current_subbeat + 1);
                 }   
                 if (snare_bits_active & (1 << current_subbeat)) {
                     snare_current_frequency = SNARE_FREQUENCY;
-                    snare_start_time        = current_time;
+                    snare_start_time        = last_beat_time;
                     snare_duration = max(45UL, subbeat_interval * 55UL / 100UL);
                    Serial.printf("[SNARE] Pos:%d Viertel:%d\n", active_playhead + 1, current_subbeat + 1);
                 }     
@@ -587,7 +590,7 @@ void loop() {
             // Melodie-Ton starten (90% des ganzen Beats)
             // Die Note klingt durch alle 4 Viertel hindurch
             current_frequency  = note_frequencies[current_note_index];
-            sound_start_time   = current_time;
+            sound_start_time   = last_beat_time;
             sound_duration = beat_interval + 12UL;
 
             Serial.printf("[BEAT] Pos:%d/%d | %s | Note:%s | kick=0b%d%d%d%d\n | snare=0b%d%d%d%d\n",
@@ -603,7 +606,7 @@ void loop() {
 
                 if (kick_bits_active & 0x01) {
                  kick_current_frequency = KICK_FREQUENCY;
-                    kick_start_time        = current_time;
+                    kick_start_time        = last_subbeat_ms;
                          kick_duration  = max(35UL, subbeat_interval * 45UL / 100UL);
 
                          Serial.printf(
@@ -614,7 +617,7 @@ void loop() {
                 
                 if (snare_bits_active & 0x01) {
                  snare_current_frequency = SNARE_FREQUENCY;
-                    snare_start_time        = current_time;
+                    snare_start_time        =  last_subbeat_ms;
                         snare_duration = max(45UL, subbeat_interval * 55UL / 100UL);
 
              Serial.printf(
@@ -669,6 +672,7 @@ void loop() {
             last_subbeat_ms   = now;
             current_subbeat   = 0;
             kick_bits_active  = 0;
+            snare_bits_active = 0;
 
             module_miss_count = 0;      // Watchdog zuruecksetzen
         }
