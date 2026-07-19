@@ -732,7 +732,7 @@ void loop() {
     } 
 
     // --- Sende aktuelle Displaydaten an PyBadge ---
-    / Interval von 500ms auf 150ms verkuerzt, damit die UI flüssig mit den Beats updatet
+    // Interval von 500ms auf 150ms verkuerzt, damit die UI flüssig mit den Beats updatet
     if (current_time - last_send_time > 150) {
         last_send_time = current_time;
         // Format: "Note,BPM,Status\n" -> Wird vom PyBadge gesplittet
@@ -747,7 +747,7 @@ void loop() {
          // Debug-Ausgabe auf dem PC-Serienmonitor (auskommentiert um Spam zu vermeiden, bei Bedarf aktivieren)
         // Serial.printf("SEND -> %s,%d,%s\n", state.note, state.bpm, state.status);
 
-        }
-    }
+        
+    
 
 
