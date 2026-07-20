@@ -4,7 +4,7 @@ import busio
 import displayio
 import terminalio
 import adafruit_imageload
-import gc # Garbage Collector
+import gc  # Garbage Collector
 from adafruit_pybadger import pybadger
 from adafruit_display_text import label
 
@@ -37,13 +37,13 @@ menu_group.append(menu_bg)
 
 # --- [Menue Texte] ---
 # Titel
-title_label = label.Label(terminalio.FONT, text="CHOOSE START NOTE", color=0xFFFFFF, x=25, y=20)
+title_label = label.Label(terminalio.FONT, text="CHOOSE YOUR FIRST NOTE", color=0xFFFFFF, x=15, y=20)
 # Riesige Anzeige fuer die aktuell gewaehlte Note (Scale=4)
-menu_note_group = displayio.Group(scale=4, x=55, y=64)
+menu_note_group = displayio.Group(scale=4, x=60, y=64)
 menu_note_label = label.Label(terminalio.FONT, text="C", color=0xFF9900, x=0, y=0)
 menu_note_group.append(menu_note_label)
 # Anweisungstext
-hint_label = label.Label(terminalio.FONT, text="Press >>START<< to Race", color=0x00FFFF, x=25, y=110)
+hint_label = label.Label(terminalio.FONT, text="Press >>START<< to race", color=0x00FFFF, x=12, y=110)
 
 menu_group.append(title_label)
 menu_group.append(menu_note_group)
@@ -91,7 +91,6 @@ gc.collect()
 
 car1_bitmap, car1_palette = adafruit_imageload.load("/porsche911.bmp", bitmap=displayio.Bitmap, palette=displayio.Palette)
 # Transparenz für den Auto-Hintergrund setzen
-# Index 0 ist in der Regel die Hintergrundfarbe (transparent)
 bg_index1 = car1_bitmap[0, 0]
 car1_palette.make_transparent(bg_index1)
 car1 = displayio.TileGrid(car1_bitmap, pixel_shader=car1_palette, x=50, y=85)
@@ -118,13 +117,9 @@ main_group.append(text_group)
 # =====================================
 # SYSTEM-START (Zuerst Menue anzeigen)
 # =====================================
-# display.root_group = boot_group  # Startet mit dem Boot-Screen
-# current_screen = "BOOT"
-# is_running = False
-
-display.root_group = main_group  # 1. boot_group을 main_group(자동차 화면)으로 변경!
-current_screen = "GAME"          # 2. "BOOT"를 "GAME"으로 변경!
-is_running = True                # 3. False를 True로 변경! (애니메이션 강제 재생)
+display.root_group = boot_group  # Startet mit dem Boot-Screen
+current_screen = "BOOT"
+is_running = False
 
 current_bpm = 120  # Wird im Hintergrund fuer die Animationsgeschwindigkeit verwendet
 warn_timer = 0
@@ -259,9 +254,9 @@ while True:
                 line.y = 64
 
         car_anim_counter += 1
-        anim_threshold = max(2, 10 - speed)
+        anim_threshold = max(1, 10 - speed)
 
-        if car_anim_counter > anim_threshold:
+        if car_anim_counter >= anim_threshold:
             car1.hidden = not car1.hidden
             car2.hidden = not car1.hidden
             car_anim_counter = 0
