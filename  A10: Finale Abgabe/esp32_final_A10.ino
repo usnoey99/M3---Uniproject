@@ -295,7 +295,7 @@ void blinkPurple() {
         for (int i = 0; i < NEO_COUNT; i++) {
             int module = i / 2;
             if (module < track_length) {
-                // Lila (Purple): RGB 값 (128, 0, 128)
+                // Lila (Purple): RGB Werte (128, 0, 128)
                 strip.setPixelColor(i, strip.Color(128, 0, 128)); 
             } else {
                 strip.setPixelColor(i, COLOR_OFF);
