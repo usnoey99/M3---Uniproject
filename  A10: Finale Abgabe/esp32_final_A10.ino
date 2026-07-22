@@ -19,7 +19,7 @@
 #define PIN_CHAIN_START 4
 
 // BPM-Grenzen fuer Systemsicherheit
-#define MAX_BPM 240  // Maximale BPM-Grenze, um UI-Lag oder Abstuerze zu verhindern
+#define MAX_BPM 640  // Maximale BPM-Grenze, um UI-Lag oder Abstuerze zu verhindern
 #define MIN_BPM 70   // Minimale BPM-Grenze
 #define STD_BPM 120  // Standard BPM
 
@@ -262,7 +262,9 @@ bool readKickSnareLive(int position) {
 
     // 4 Bytes vom ATtiny lesen: direction, kick, snare, chain_active
  Wire.requestFrom(addr, (uint8_t)4);
-    delay(20);
+ delay(20);
+ 
+    
     if (Wire.available() >= 4) {
         Wire.read();                           // direction
         kick_pattern[position] = Wire.read();  // kick
@@ -418,7 +420,7 @@ void setup() {
 
    // Bluetooth A2DP Source starten (Hier den Namen des Lautsprechers eintragen)
     Serial.println("[SYSTEM] Verbinde mit Bluetooth-Lautsprecher...");
-    a2dp_source.start("HUAWEI CM510", get_audio_data);
+    a2dp_source.start("SoundCore 2", get_audio_data);
 
 
     // Kurz warten damit alle Module hochgefahren sind
@@ -584,13 +586,13 @@ void loop() {
 
                 if (kick_bits_active & (1 << current_subbeat)) {
                     kick_current_frequency = KICK_FREQUENCY;
-                    kick_start_time        = last_beat_time;
+                    kick_start_time        = last_subbeat_ms;
                     kick_duration  = max(35UL, subbeat_interval * 45UL / 100UL);
                    Serial.printf("[KICK] Pos:%d Viertel:%d\n", active_playhead + 1, current_subbeat + 1);
                 }   
                 if (snare_bits_active & (1 << current_subbeat)) {
                     snare_current_frequency = SNARE_FREQUENCY;
-                    snare_start_time        = last_beat_time;
+                    snare_start_time        = last_subbeat_ms;
                     snare_duration = max(45UL, subbeat_interval * 55UL / 100UL);
                    Serial.printf("[SNARE] Pos:%d Viertel:%d\n", active_playhead + 1, current_subbeat + 1);
                 }     
@@ -682,13 +684,16 @@ void loop() {
         Serial.println(command);
 
         if (command == "INIT_OK") {
-            // PyBadge hat sich erfolgreich verbunden!
+            // PyBadge hat sich erfolgreich verbunden
             blinkPurple();
         }
         else if (command == "CHECK_START") {
             // Check: Sind physikalische Track-Module verbunden?
+
+            scanAndBuildTrack();
+
             if (track_length > 0) {
-                // Track vorhanden! Erlaubnis fuer F1-Animation an PyBadge senden (Musik wartet noch)
+                // Track vorhanden Erlaubnis fuer F1-Animation an PyBadge senden (Musik wartet noch)
                 Serial2.println("CMD_START_OK");
                 Serial.println("[SYSTEM] CHECK_START OK. Warte auf F1-Animation...");
             } else {
@@ -698,7 +703,6 @@ void loop() {
             }
         }
         else if (command == "START_MUSIC") {
-            // F1-Animation des PyBadge ist beendet! Echtes Racing (Musik) startet jetzt!
             state.status   = "RUNNING";
             unsigned long now  = millis();  
             last_beat_time    = now;
