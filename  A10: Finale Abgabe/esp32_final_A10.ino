@@ -1,5 +1,5 @@
 
-// Bluetooth + ATtiny I2C + Chain + NeoPixel
+// Bluetooth + ATtiny I2C + Chain + NeoPixel + sawtooth
 
 
 #include <Arduino.h>
@@ -19,7 +19,8 @@
 #define PIN_CHAIN_START 4
 
 // BPM-Grenzen fuer Systemsicherheit
-#define MAX_BPM 640  // Maximale BPM-Grenze, um UI-Lag oder Abstuerze zu verhindern
+#define MAX_BPM 640  // Maximale BPM-Grenze, um UI-Lag oder Abstuerze zu verhindern, wird nicht voll ausgenutzt, da potentiometer sich nur so 1/3 dreht
+
 #define MIN_BPM 70   // Minimale BPM-Grenze
 #define STD_BPM 120  // Standard BPM
 
@@ -61,6 +62,7 @@ int start_note_index   = 0;   //
 int current_note_index = start_note_index;
 
 // Frequenzen (Hz) fuer die 12 Noten des Quintenzirkels (Basis: C4 bis B4)
+//alle in gleicher Oktave, also nur musikalisch richtig mit hoch und runter
 const float note_frequencies[12] = {
     261.63, // C
     392.00, // G
@@ -76,16 +78,18 @@ const float note_frequencies[12] = {
     349.23  // F
 };
 
-//  Kick und SNare-Frequenz 
+//  Kick und Snare-Frequenz 
 #define KICK_FREQUENCY   180.0f
 #define SNARE_FREQUENCY  320.0f
 
 #define SAMPLE_RATE      44100.0f
-#define MELODY_LEVEL     2300.0f
+#define MELODY_LEVEL     2300.0f //Lautstärke der Töne
 
-#define KICK_LEVEL       6500.0f
+//Lautstärke von Kick und Snare
+#define KICK_LEVEL       6500.0f 
 #define SNARE_LEVEL      5200.0f
 
+//allgemiene Lautstärke
 #define MASTER_LIMIT     30000
 
 // Systemzustand 
@@ -106,11 +110,12 @@ BluetoothA2DPSource a2dp_source;
 
 // FunctionGenerator Instanzen (eine pro Ton)
 // Amplitude wird spaeter per setAmplitude() gesetzt
+// für melody, kick und snare
 funcgen melody_osc;
-funcgen kick_osc;
-funcgen snare_osc;  // Snare
+funcgen kick_osc;   
+funcgen snare_osc;  
 
-//Meldodien-tom
+//Melodien-Ton
 volatile float current_frequency = 0; // 0 bedeutet Stille
 volatile unsigned long sound_duration = 0;
 volatile unsigned long sound_start_time = 0;
@@ -121,7 +126,7 @@ volatile float    kick_current_frequency   = 0;      // 0 bedeutet Stille
 volatile uint32_t kick_start_time   = 0;      
 volatile uint32_t kick_duration    = 0;   
 
-// Snarea-Ton
+// Snare-Ton
 volatile float snare_current_frequency = 0;
 volatile unsigned long snare_start_time = 0;
 volatile unsigned long snare_duration = 0;
@@ -152,6 +157,7 @@ static int16_t clampSample(float value) {
     return (int16_t)value;
 }
 //  Library gibt Werte zwischen -amplitude und +amplitude zurueck
+//sawtooth
 // Wir benutzen t = Zeit in Sekunden seit Ton-Start
 // Attack: erste 5ms natuerlich einblenden (kein harter Start)
 // Decay fuer Note: letzte 20% des Takts ausblenden → klingt harmonischer
@@ -197,7 +203,7 @@ int32_t get_audio_data(Frame *channels, int32_t channel_len) {
             }
             const float elapsed_ms = (now_ms - kick_start_time) + (i * 1000.0f / SAMPLE_RATE);
             float env = envelope(elapsed_ms, kick_duration, 3.0f, kick_duration * 0.92f);
-            env *= env;  // quadriert → perkussiver Decay
+            env *= env;                                                                     // quadriert → perkussiver Decay
             const float t = kick_samples++ / SAMPLE_RATE;
             sample += kick_osc.sawtooth(t) * KICK_LEVEL * env;
         } else {
@@ -234,7 +240,7 @@ int32_t get_audio_data(Frame *channels, int32_t channel_len) {
 //updateNeoPixelTrack
 void updateNeoPixelTrack() {
     for (int i = 0; i < NEO_COUNT; i++) {
-        int module = i / 2;  // Welches Modul gehört diese LED?
+        int module = i / 2;                 // Welches Modul gehört diese LED
         
         if (module >= track_length) {
             strip.setPixelColor(i, COLOR_OFF);
@@ -253,8 +259,8 @@ void updateNeoPixelTrack() {
     }
     strip.show();
 }
-// Kick und Snare  lesen
-// Gibt true zurueck wenn Modul erreichbar, false wenn nicht (Watchdog!)
+// Kick und Snare  live lesen
+// Gibt true zurueck wenn Modul erreichbar, false wenn nicht 
 bool readKickSnareLive(int position) {
     if (position >= track_length) return true;
     uint8_t addr = module_addresses[position];
@@ -262,7 +268,7 @@ bool readKickSnareLive(int position) {
 
     // 4 Bytes vom ATtiny lesen: direction, kick, snare, chain_active
  Wire.requestFrom(addr, (uint8_t)4);
- delay(20);
+ delay(20); //kann rein oder auch nicht (manchmal funktioniert es besser ohne)
  
     
     if (Wire.available() >= 4) {
@@ -291,29 +297,22 @@ void resetAllModules() {
 
 void blinkPurple() {
     Serial.println("[SYSTEM] PyBadge verbunden! LED Bestaetigung (Lila blinken)...");
-    
-    // 3 Mal lila blinken
-    for (int b = 0; b < 3; b++) { 
+
+    for (int b = 0; b < 3; b++) {
         for (int i = 0; i < NEO_COUNT; i++) {
-            int module = i / 2;
-            if (module < track_length) {
-                // Lila (Purple): RGB Werte (128, 0, 128)
-                strip.setPixelColor(i, strip.Color(128, 0, 128)); 
-            } else {
-                strip.setPixelColor(i, COLOR_OFF);
-            }
+            strip.setPixelColor(i, strip.Color(128, 0, 128)); // alle LEDs lila, unabhängig vom Track
         }
         strip.show();
-        delay(250); // 250ms an
+        delay(250);
 
         for (int i = 0; i < NEO_COUNT; i++) {
             strip.setPixelColor(i, COLOR_OFF);
         }
         strip.show();
-        delay(250); // 250ms aus
+        delay(250);
     }
-    // Danach wieder normale Track-Farben anzeigen
-    updateNeoPixelTrack();
+
+    updateNeoPixelTrack(); // Danach wieder normale Track-Farben (dort ist die track_length-Abfrage korrekt am Platz)
 }
 
 
@@ -438,7 +437,7 @@ void loop() {
     int pot_value = analogRead(POT_PIN);
     int new_bpm   = map(pot_value, 0, 4095, MIN_BPM, MAX_BPM);
     
-    // Nur aktualisieren wenn Änderung > 5 BPM (verhindert Zittern)
+    // Nur aktualisieren wenn Änderung > 4 BPM (verhindert Zittern)
     if (abs(new_bpm - state.bpm) > 4) {
         state.bpm = new_bpm;
         Serial.printf("[POT] BPM: %d\n", state.bpm);
@@ -537,7 +536,8 @@ void loop() {
                 Serial.println("[KICK] Format: K1=5 (Modul=Muster)");
             }
         }
-        // Kick manuell pro Modul setzen
+        // Kick manuell pro Modul setzen 
+        // nur für testen
         else if (c == 'N') {
             delay(100);
             String input = "";
@@ -575,7 +575,7 @@ void loop() {
         unsigned long beat_interval = 60000 / state.bpm;
         subbeat_interval = beat_interval / 4;  // Ein Viertel = Beat/4
 
-//zuerts subbeat?
+//zuerts subbeat
             while (
         subbeat_interval > 0 &&
         current_subbeat < 3 &&
@@ -603,7 +603,7 @@ void loop() {
             last_subbeat_ms = last_beat_time; //beginn des neuen taktes
             current_subbeat = 0;  // Erstes Viertel
 
-            // Kick live lesen mit Watchdog gerade kein watchsog für test
+            // Kick live 
             // Aktuelles Modul lesen, bevor der Playhead weitergeht
             
             // Dieses Modul bleibt für alle vier Viertel aktiv
@@ -672,7 +672,8 @@ void loop() {
         }
     }       
 
-    // --- Befehle vom PyBadge empfangen (UART Read) ---
+    // Befehle vom PyBadge empfangen (UART Read) 
+    //also scan, start, up, down, stopp
     if (Serial2.available()) {
         String command = Serial2.readStringUntil('\n');
         command.trim();   // Entfernt Whitespaces und Zeilenumbruecke
@@ -735,7 +736,7 @@ void loop() {
         }
     } 
 
-    // --- Sende aktuelle Displaydaten an PyBadge ---
+    //  Sende aktuelle Displaydaten an PyBadge 
     // Interval von 500ms auf 150ms verkuerzt, damit die UI flüssig mit den Beats updatet
     if (current_time - last_send_time > 150) {
         last_send_time = current_time;
