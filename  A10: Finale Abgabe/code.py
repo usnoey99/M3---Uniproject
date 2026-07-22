@@ -1,7 +1,6 @@
 """
 ====================================================================
 Projekt: M3 - Gruppe 8 - A10 "Racetrack"
-Autor: Yeonsu Kang
 Datei: code.py (PyBadge UI & Controller)
 
 Beschreibung:
