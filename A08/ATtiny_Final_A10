@@ -1,5 +1,5 @@
 
-#define I2C_ADDRESS  0x10  // Chip-Adresse: 0x10=STRAIGHT, 0x11=LEFT, 0x12=RIGHT
+#define I2C_ADDRESS  0x10  // Chip-Adresse: 0x10=STRAIGHT, 0x11=LEFT, 0x12=RIGHT //immer ändern!!!
 #define DIRECTION    0     // Richtung: 0=STRAIGHT, 1=LEFT, 2=RIGHT
 // =============================================
 
