@@ -142,8 +142,7 @@ display.root_group = boot_group  # Startet mit dem Boot-Screen
 current_screen = "BOOT"
 is_running = False
 
-current_bpm = 120  # Wird im Hintergrund fuer die Animationsgeschwindigkeit verwendet
-warn_timer = 0
+current_bpm = 120  # Fallback-Wert zur Sicherheit (wird sofort durch ESP32-Daten überschrieben)
 
 # Variablen fuer Flankenerkennung (D-Pad Tasten)
 prev_up = False
