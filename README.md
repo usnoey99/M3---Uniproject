@@ -3,17 +3,12 @@
 
 
 ### Video Demonstration
-Click the thumbnail below to watch the project demonstration video:
-[![Project Demo Thumbnail](./%20A10%3A%20Finale%20Abgabe/Thumbnail1.png)](./A10%3A%20Finale%20Abgabe/RaceTrack.mp4)
 
-*Or watch via embedded player:*
-
-<video src="./A10%3A%20Finale%20Abgabe/RaceTrack.mp4" controls width="100%">
-  Your browser does not support the video tag.
-</video>
+[RaceTrack Demo Video](https://github.com/user-attachments/assets/90ffaf7d-e557-4ccf-97b7-1830bb99d353)
 
 
 ---
+
 
 ## Manuals & Documentation
 
